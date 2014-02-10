@@ -1,0 +1,35 @@
+<div class="media-control" data-role="footer" data-position="fixed" data-theme="a">
+    <form action="#" method="get">
+        <div class="player-control ui-bar">
+            <div>
+                <div class="cover-box" style="float: left; margin-right: 15px">
+                    <a href="./nowplaying.html"><img class="cover" src=""></a>
+                </div>
+                <div>
+                    <div class="now-playing">Titre du morceau</div>
+                    <div class="player" data-role="controlgroup" data-type="horizontal">
+                        <a class="control-prev" data-icon="previous" data-role="button" href="#">Previous</a>
+                        <a class="control-play" data-icon="play" data-role="button" href="#">Play/Pause</a>
+                        <a class="control-stop" data-icon="stop" data-role="button" href="#">Stop</a>
+                        <a class="control-next" data-icon="next" data-role="button" href="#">Next</a>
+                    </div>
+                    <div class="volume">
+                        <a class="control-vol-mute ui-corner-all ui-btn ui-btn-icon-notext ui-icon-volume-mute2"
+                           href="#">&nbsp;</a>
+                        <a class="control-vol-dec ui-corner-all ui-btn ui-btn-icon-notext ui-icon-volume-decrease"
+                           href="#">&nbsp;</a>
+
+                        <div class="inner-slider">
+                            <input type="range" name="slider" id="slider" value="50"
+                                   min="0" max="100"
+                                   data-highlight="true"
+                                   data-mini="true"></div>
+                        <a class="control-vol-inc ui-corner-all ui-btn ui-btn-icon-notext ui-icon-volume-increase"
+                           href="#">&nbsp;</a>
+                        <span class="control-current-volume">Titre du morceau</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

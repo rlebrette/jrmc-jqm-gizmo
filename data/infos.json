@@ -1,0 +1,9 @@
+\{"location": "[LibraryLocation]",
+"programFullName": "[ProgramFullName]",
+"programName": "[ProgramName]",
+"programVersion": "[ProgramVersion]",
+"activeZone": "[ActiveZoneName]",
+"libraryLink": "[LibraryServerLink]",
+"token": "[Token]",
+"muted": "{Muted}"
+\}

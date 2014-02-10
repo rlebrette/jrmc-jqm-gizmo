@@ -1,0 +1,5 @@
+\[
+<!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
+\{image: "[LibraryItem([z]).ImageLink]", to: "[LibraryItem([z]).IntoLink]", name: "[LibraryItem([z]).Name]"\}
+<!-- end: loop -->
+\]

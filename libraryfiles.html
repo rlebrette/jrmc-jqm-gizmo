@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- Main screen for library view -->
+<html>
+<head>
+    <title>jqmRemote</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/styles.css">
+    <script data-main="js/main" src="js/libs/require.js"></script>
+</head>
+<body>
+
+<div data-role="view" data-src="partials/configuration.view.html"></div>
+<div data-role="view" data-src="partials/header.view.html"></div>
+
+<div data-role="page" data-theme="a" data-title="[CurrentLibraryItem.Name]" id="library-files">
+    <div role="main" class="ui-content">
+        <ul data-role="listview" data-inset="true">
+            <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryFilesCount] - 1)) -->
+            <li><a href="#" data-transition="slide">
+                <img src="[CurrentLibraryItem.ImageLink]&amp;Width=250&amp;Height=250" class="ui-li-thumb">
+
+                <h2>[LibraryFile([z]).Name]</h2>
+
+                <p>[LibraryFile([z]).Artist]</p>
+
+                <p class="ui-li-aside">time</p>
+            </a></li>
+            <!-- end: loop -->
+        </ul>
+
+    </div>
+    <!-- /content -->
+
+</div>
+<!-- /page -->
+<div data-role="view" data-src="partials/footer.view.html"></div>
+
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+\[
+<!-- begin: loop(z, 0, [ZoneCount]-1) -->
+\{id: "[Zone([z]).ID]", name: "[Zone([z]).Name]"\}
+<!-- end: loop -->
+\]
