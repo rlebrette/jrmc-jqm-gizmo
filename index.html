@@ -15,7 +15,7 @@
 <div data-role="view" data-src="partials/configuration.view.html"></div>
 <div data-role="view" data-src="partials/header.view.html"></div>
 
-<div data-role="page" data-theme="a" data-title="jqmRemote" data-view="index">
+<div data-role="page" data-theme="a" data-title="jqmRemote" data-view="zone-select">
     <div role="main" data-title="jqmRemote" class="ui-content">
         <p>{Gizmo allows you to play and control your media from anywhere.}</p>
         <br/>
@@ -26,12 +26,12 @@
             <div style="padding:10px 20px;">
                 <ul data-role="listview" data-inset="false">
                     <li>
-                        <a onClick="setCookie('mode', 'play', 365)" href="library.html" data-transition="slide">This
-                            Location</a>
+                        <a onClick="$jqmRemote.setZone('play','{This Location}')" href="library.html" data-transition="slide">{This
+                            Location}</a>
                     </li>
                     <!-- begin: loop(z, 0, [ZoneCount] - 1) -->
                     <li>
-                        <a onClick="setCookie('mode', 'remote([Zone([z]).ID])', 365)" href="library.html"
+                        <a onClick="$jqmRemote.setZone([Zone([z]).ID],'[Zone([z]).Name]')" href="library.html"
                            data-transition="slide">[Zone([z]).Name]</a>
                     </li>
                     <!-- end: loop -->

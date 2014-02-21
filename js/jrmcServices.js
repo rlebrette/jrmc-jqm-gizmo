@@ -1,6 +1,7 @@
 define(['jquery'], function ($) {
     // This object provides several services that are helping the user to deal with the JRMC web APIs
     var $service = {};
+    $service.zone = 0;
     $service.init = function () {
         $.ajax({url: "data/infos.json", async: false}).done(
             function (data) {
@@ -23,16 +24,25 @@ define(['jquery'], function ($) {
     $service.mute = function () {
         invokeMCC(10017, 0);
     };
+    $service.showDSP = function () {
+        invokeMCC(10016, 0);
+    };
+    $service.key = function (key) {
+        return function () {
+            invoke({run: "Control/Key", params: {Key: key, Focus:1}})
+        }
+    };
     $service.getPlaybackInfo = function (callback) {
         invoke({run: "Playback/Info"}, callback)
     };
 
     var invoke = function (operation, callback) {
-        var params = $.extend({Token: $service.infos.token}, operation.params);
+        var params = $.extend({Token: $service.infos.token, ZoneId: $service.zone}, operation.params);
         $.ajax({url: "/MCWS/v1/" + operation.run + "?" + $.param(params), async: operation.async || false}).done(
             function (data) {
-                var elem = convertToJSON(data);
-                if (callback != undefined) callback(elem);
+                if (callback != undefined) {
+                    callback(convertToJSON(data));
+                }
             }
         )
     };

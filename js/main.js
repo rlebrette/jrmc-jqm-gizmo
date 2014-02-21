@@ -17,5 +17,7 @@ requirejs.config({
     }
 });
 
-requirejs(['jquery', 'jquery.mobile', 'jquery.img.lazy', 'jquery.cookie', 'app/jrmcServices', 'app/jqmRemote']);
+requirejs(['app/jqmRemote'], function (app) {
+    $jqmRemote = app;
+});
 

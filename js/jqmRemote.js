@@ -1,10 +1,10 @@
-define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc) {
+define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie'], function ($, $jqm, $jrmc) {
     // the global state of the player
     player = {
         lastPlayInfo: {ImageURL: null}, // the last info retrieved from the remote player
         view: {}, // the current page
-        control: {}, // the different HTML components in player footer.
-        configuration : {
+        controls: {}, // the different HTML components in player footer.
+        configuration: {
             refresh: 500 // how many milliseconds before refreshing data from JRMC
         }
     };
@@ -34,10 +34,20 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
         });
     }
 
-    function updateLibraryView() {
+    function prepareLibraryView(page) {
         $("img.lazy").lazyload({
             effect: "fadeIn"
         });
+    }
+
+    function prepareRemoteView(page) {
+        $("#key-dsp", page).click($jrmc.showDSP);
+        $("#key-up", page).click($jrmc.key('up'));
+        $("#key-down", page).click($jrmc.key('down'));
+        $("#key-left", page).click($jrmc.key('left'));
+        $("#key-right", page).click($jrmc.key('right'));
+        $("#key-ok", page).click($jrmc.key('enter'));
+        $("#key-back", page).click($jrmc.key('backspace'));
     }
 
     function updateNowPlaying(playInfo) {
@@ -47,21 +57,37 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
         $("#np-album").text(playInfo.Album);
     }
 
-    var preparePageContentCallbacks = {
-        "library": updateLibraryView
+    var onPageShowCallbacks = {
+        "library": prepareLibraryView
     };
-
-    var updateViewOnPlayerStatusCallbacks = {
+    var onPageCreateCallbacks = {
+        "remote": prepareRemoteView
+    };
+    var onPlayerStatusChangeCallbacks = {
         "now-playing": updateNowPlaying
     };
 
-// called when a page is loaded via Ajax, then update the surrounding page.
-    function preparePageContent() {
+    function setCurrentView(activePage) {
         var view = player.view;
-        view.title = $.mobile.activePage.jqmData("title");
-        view.type = $.mobile.activePage.jqmData("view");
+        view.title = activePage.jqmData("title");
+        view.type = activePage.jqmData("view");
+        return view;
+    }
+
+// called when a page is loaded via Ajax, then update the surrounding page.
+    function onPageShow() {
+        var activePage = $.mobile.activePage;
+        var view = setCurrentView(activePage);
         $("[data-role='header'] h1").text(view.title);
-        (preparePageContentCallbacks[view.type] || noop)()
+        $("#currentZone").text($jrmc.zoneName||'-');
+        (onPageShowCallbacks[view.type] || noop)(activePage)
+    }
+
+
+    function onPageCreate(event) {
+        var activePage = $(event.target);
+        var view = setCurrentView(activePage);
+        (onPageCreateCallbacks[view.type] || noop)(activePage)
     }
 
     function updatePlayerControlStatus(playInfo) {
@@ -70,7 +96,7 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
         if (player.lastPlayInfo.ImageURL != imageURL) {
             this.cover.attr("src", imageURL);
         }
-        var mute = player.control.mute;
+        var mute = player.controls.mute;
         var slider = this.volume_slider.parent().find(".ui-slider-bg");
         if (playInfo.VolumeDisplay == $jrmc.infos.muted) {
             mute.addClass('muted');
@@ -90,16 +116,16 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
 
     function refreshPlayerStatus() {
         $jrmc.getPlaybackInfo(function (playInfo) {
-            updatePlayerControlStatus.call(player.control, playInfo);
-            (updateViewOnPlayerStatusCallbacks[player.view.type] || noop).call(player.control, playInfo);
+            updatePlayerControlStatus.call(player.controls, playInfo);
+            (onPlayerStatusChangeCallbacks[player.view.type] || noop).call(player.controls, playInfo);
             player.lastPlayInfo = playInfo;
             setTimeout(refreshPlayerStatus, player.configuration.refresh);
         });
     }
 
-    function createPlayerControl(player) {
+    function createPlayerControls(player) {
         var footer = $(".player-control");
-        player.control = {
+        player.controls = {
             title: $(".now-playing", footer),
             next: $(".control-next", footer),
             previous: $(".control-prev", footer),
@@ -112,7 +138,7 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
             currentVolume: $(".control-current-volume", footer),
             volume_slider: $('#slider', footer)
         };
-        return player.control;
+        return player.controls;
     }
 
     function initializePlayControlCallbacks(control) {
@@ -128,11 +154,22 @@ define(["jquery", "jquery.mobile", "app/jrmcServices"], function ($, $jqm, $jrmc
         loadViews();
         $("[data-role='header'], [data-role='footer']").toolbar();
         $("[data-role='popup']").popup();
-        preparePageContent();
-        initializePlayControlCallbacks(createPlayerControl(player));
+        initializePlayControlCallbacks(createPlayerControls(player));
+        onPageShow();
         refreshPlayerStatus();
     });
 
 // Update the contents of the pages when loading a new page with Ajax
-    $(document).on("pageshow", "[data-role='page']", preparePageContent);
+    $(document).on("pageshow", "[data-role='page']", onPageShow);
+    $(document).on("pagecreate", "[data-role='page']", onPageCreate);
+    return {
+        setZone: function (zoneId, zoneName) {
+            if (zoneId != 'play') {
+                $jrmc.zone = zoneId;
+                $jrmc.zoneName = zoneName;
+                zoneId = "remote(" + zoneId + ")";
+            }
+            setCookie('mode', zoneId, 365);
+        }
+    }
 });
