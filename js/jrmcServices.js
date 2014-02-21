@@ -29,11 +29,14 @@ define(['jquery'], function ($) {
     };
     $service.key = function (key) {
         return function () {
-            invoke({run: "Control/Key", params: {Key: key, Focus:1}})
+            invoke({run: "Control/Key", params: {Key: key, Focus: 1}})
         }
     };
     $service.getPlaybackInfo = function (callback) {
         invoke({run: "Playback/Info"}, callback)
+    };
+    $service.getFileInfo = function (key, callback) {
+        invoke({run: "File/GetInfo", params: {File: key}}, callback)
     };
 
     var invoke = function (operation, callback) {
@@ -50,10 +53,18 @@ define(['jquery'], function ($) {
         invoke({run: "Control/MCC", params: {Command: command, Parameter: parameter}})
     };
     var convertToJSON = function (data) {
+        var content;
         var elem = {};
-        elem.ResponseStatus = $("Response", data).attr("Status");
-        var result = $("Item", data);
-        $(result).each(function () {
+        var xml = $(data);
+        var response = xml.find("Response");
+        if (response.length > 0) {
+            elem.ResponseStatus = $("Response", xml).attr("Status");
+            content = xml.find("Item");
+        } else {
+            content = xml.find("Field");
+        }
+
+        $(content).each(function () {
             var value = $(this);
             elem[value.attr("Name")] = value.text();
         });

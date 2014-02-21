@@ -24,12 +24,17 @@
 
 .np-cover {
     float: left;
+    width: 33%;
+}
+
+
+.np-cover img {
     border: 1px #ffffff solid;
     -webkit-box-shadow: 14px 19px 28px 2px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 14px 19px 28px 2px rgba(0, 0, 0, 0.75);
     box-shadow: 14px 19px 28px 2px rgba(0, 0, 0, 0.75);
-    width: 300px;
-    height: 300px;
+    width: 90%;
+    height: 90%;
 }
 
 .np-info {
@@ -42,22 +47,29 @@
     word-spacing: 2pt;
     font-family: verdana, sans-serif;
     line-height: 1;
-    width: 100%;
+    width: 66%;
+    float: left;
 }
 
-#np-artist {
-    color: #5b5b5b;
-    font-size: 34px;
+.np-info #np-next-cover {
+    width: 60px;
+    float: right;
+    border: 1px solid #000000;
 }
-#np-title {
+
+.np-info #np-artist {
+    color: #5b5b5b;
+    font-size: 2.5rem;
+}
+.np-info #np-title {
     color: #000000;
-    font-size: 42px;
+    font-size: 3rem;
     font-weight: bold;
 
 }
-#np-album {
+.np-info #np-album {
     color: #5b5b5b;
-    font-size: 34px;
+    font-size: 2.5rem;
 }
 
 .media-control .cover {

@@ -55,10 +55,22 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         $("#np-title").text(playInfo.Name);
         $("#np-artist").text(playInfo.Artist);
         $("#np-album").text(playInfo.Album);
+        if (playInfo.FileKey != player.playingNowFileKey) {
+            player.playingNowFileKey = playInfo.FileKey;
+            $jrmc.getFileInfo(playInfo.NextFileKey, function (next) {
+                $("#np-next-cover").attr("src", "MCWS/v1/File/GetImage?File=" + next.Key);
+                $("#np-next").text(next.Name);
+            });
+        }
     }
 
     var onPageShowCallbacks = {
-        "library": prepareLibraryView
+        "now-playing": function() {
+            player.playingNowFileKey = undefined;
+        },
+        "library": prepareLibraryView,
+        "playingnow-list": prepareLibraryView,
+        "library-files": prepareLibraryView
     };
     var onPageCreateCallbacks = {
         "remote": prepareRemoteView
@@ -79,7 +91,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         var activePage = $.mobile.activePage;
         var view = setCurrentView(activePage);
         $("[data-role='header'] h1").text(view.title);
-        $("#currentZone").text($jrmc.zoneName||'-');
+        $("#currentZone").text($jrmc.zoneName || '-');
         (onPageShowCallbacks[view.type] || noop)(activePage)
     }
 
