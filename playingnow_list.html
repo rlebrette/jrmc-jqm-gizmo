@@ -11,7 +11,8 @@
 </head>
 <body>
 
-<div data-role="view" data-src="partials/configuration.view.html"></div>
+<div data-role="view" data-src="partials/library-file.dialog.view.html"></div>
+<div data-role="view" data-src="partials/library-folder.dialog.view.html"></div>
 <div data-role="view" data-src="partials/header.view.html"></div>
 
 <div data-role="page" data-theme="a" data-title="{Current Playlist}" data-view="playingnow-list" id="playingnow-list">
@@ -23,9 +24,9 @@
 
                 <h2>[PlayingNowFile([z]).Name]</h2>
 
-                <p>[PlayingNowFile([z]).Artist]</p>
+                <p>[PlayingNowFile([z]).Artist] - [PlayingNowFile([z]).Album]</p>
 
-                <p class="ui-li-aside">time</p>
+                <!--<p class="ui-li-aside">time</p>-->
             </a></li>
             <!-- end: loop -->
         </ul>

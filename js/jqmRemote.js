@@ -1,16 +1,14 @@
 define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie'], function ($, $jqm, $jrmc) {
     // the global state of the player
-    player = {
+    var player = {
         lastPlayInfo: {ImageURL: null}, // the last info retrieved from the remote player
         view: {}, // the current page
         controls: {}, // the different HTML components in player footer.
         configuration: {
+            level: 0.05, // percent of volume level change when using level buttons
             refresh: 500 // how many milliseconds before refreshing data from JRMC
         }
     };
-
-    function noop() {
-    }
 
     function setCookie(c_name, value, exdays) {
         // build date
@@ -28,16 +26,18 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         $viewHolders.each(function () {
             var holder = $(this);
             var $src = holder.attr("data-src");
-            $.ajax({url: $src, async: false}).done(function (data) {
+            $.ajax({url: $src, async: false}).then(function (data) {
                 holder.replaceWith(data);
             });
         });
     }
 
     function prepareLibraryView(page) {
-        $("img.lazy").lazyload({
+        $("img.lazy", page).lazyload({
             effect: "fadeIn"
         });
+        $(".library-folder", page).bind("taphold", folderPlayDialog);
+        $(".library-file", page).click(filePlayDialog)
     }
 
     function prepareRemoteView(page) {
@@ -48,6 +48,9 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         $("#key-right", page).click($jrmc.key('right'));
         $("#key-ok", page).click($jrmc.key('enter'));
         $("#key-back", page).click($jrmc.key('backspace'));
+        $("#key-home", page).click($jrmc.theaterHome);
+        $("#key-playing-now", page).click($jrmc.theaterNP);
+        $("#key-fullscreen", page).click($jrmc.fullscreen);
     }
 
     function updateNowPlaying(playInfo) {
@@ -57,7 +60,8 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         $("#np-album").text(playInfo.Album);
         if (playInfo.FileKey != player.playingNowFileKey) {
             player.playingNowFileKey = playInfo.FileKey;
-            $jrmc.getFileInfo(playInfo.NextFileKey, function (next) {
+            $jrmc.getFileInfo(playInfo.NextFileKey).then(function (data) {
+                var next = data();
                 $("#np-next-cover").attr("src", "MCWS/v1/File/GetImage?File=" + next.Key);
                 $("#np-next").text(next.Name);
             });
@@ -65,7 +69,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
     }
 
     var onPageShowCallbacks = {
-        "now-playing": function() {
+        "playingnow": function () {
             player.playingNowFileKey = undefined;
         },
         "library": prepareLibraryView,
@@ -76,7 +80,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         "remote": prepareRemoteView
     };
     var onPlayerStatusChangeCallbacks = {
-        "now-playing": updateNowPlaying
+        "playingnow": updateNowPlaying
     };
 
     function setCurrentView(activePage) {
@@ -86,20 +90,44 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         return view;
     }
 
+    function jrmcData(element, value) {
+        if (value == undefined)
+            return $.parseJSON('{' + $(element).jqmData("jrmc") + '}')
+        else
+            $(element).jqmData("jrmc", JSON.stringify(value).replace('{', '').replace('}', ''));
+    }
+
+    function filePlayDialog(event) {
+        var $playFileDialog = $('#play-file-dialog');
+        var $jrmcData = jrmcData(this);
+        $playFileDialog.find('#playDialog-title').text($jrmcData.name);
+        $playFileDialog.popup("open", {positionTo: event.target});
+        jrmcData($playFileDialog, $jrmcData);
+    }
+
+    function folderPlayDialog(event) {
+        var $playFileDialog = $('#play-folder-dialog');
+        var $jrmcData = jrmcData(this);
+        $jrmcData.key = $jrmcData.key.match(/.*LibraryLocation=(.*)&.*/)[1];
+        $playFileDialog.find('#playFolder-title').text($jrmcData.name);
+        $playFileDialog.popup("open", {positionTo: event.target});
+        jrmcData($playFileDialog, $jrmcData);
+    }
+
 // called when a page is loaded via Ajax, then update the surrounding page.
     function onPageShow() {
         var activePage = $.mobile.activePage;
         var view = setCurrentView(activePage);
         $("[data-role='header'] h1").text(view.title);
         $("#currentZone").text($jrmc.zoneName || '-');
-        (onPageShowCallbacks[view.type] || noop)(activePage)
+        (onPageShowCallbacks[view.type] || $.noop)(activePage)
     }
 
 
     function onPageCreate(event) {
         var activePage = $(event.target);
         var view = setCurrentView(activePage);
-        (onPageCreateCallbacks[view.type] || noop)(activePage)
+        (onPageCreateCallbacks[view.type] || $.noop)(activePage)
     }
 
     function updatePlayerControlStatus(playInfo) {
@@ -122,14 +150,17 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         } else {
             this.playpause.addClass('muted');
         }
-        this.volume_slider.val(playInfo.Volume * 100).slider("refresh");
+        if (!this.volume_slider.processing) {
+            this.volume_slider.val(playInfo.Volume * 100).slider("refresh");
+        }
         this.currentVolume.text(playInfo.VolumeDisplay);
     }
 
     function refreshPlayerStatus() {
-        $jrmc.getPlaybackInfo(function (playInfo) {
+        $jrmc.getPlaybackInfo().then(function (data) {
+            playInfo = data();
             updatePlayerControlStatus.call(player.controls, playInfo);
-            (onPlayerStatusChangeCallbacks[player.view.type] || noop).call(player.controls, playInfo);
+            (onPlayerStatusChangeCallbacks[player.view.type] || $.noop).call(player.controls, playInfo);
             player.lastPlayInfo = playInfo;
             setTimeout(refreshPlayerStatus, player.configuration.refresh);
         });
@@ -159,13 +190,29 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         control.previous.click($jrmc.previous);
         control.stop.click($jrmc.stop);
         control.mute.click($jrmc.mute);
+        control.volinc.click(function () {
+            $jrmc.increaseVolume(player.configuration.level)
+        });
+        control.voldec.click(function () {
+            $jrmc.decreaseVolume(player.configuration.level)
+        });
+        control.volume_slider.slider({
+            start: function (event, ui) {
+                control.volume_slider.processing = true;
+            },
+            stop: function (event, ui) {
+                var level = $(event.target).val() / 100;
+                $jrmc.changeVolume(level, 0);
+                control.volume_slider.processing = false;
+            }
+        });
     }
 
     $(function () {
         $jrmc.init();
         loadViews();
         $("[data-role='header'], [data-role='footer']").toolbar();
-        $("[data-role='popup']").popup();
+        $("[data-role='popup']").enhanceWithin().popup();
         initializePlayControlCallbacks(createPlayerControls(player));
         onPageShow();
         refreshPlayerStatus();
@@ -182,6 +229,12 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
                 zoneId = "remote(" + zoneId + ")";
             }
             setCookie('mode', zoneId, 365);
+        },
+        playDialogDo: function (action) {
+            var $playFileDialog = $('#play-file-dialog');
+            var $jrmcData = jrmcData($playFileDialog);
+            $jrmc.playFile($jrmcData.key, action);
+            $playFileDialog.popup("close");
         }
     }
 });

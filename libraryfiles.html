@@ -11,21 +11,22 @@
 </head>
 <body>
 
-<div data-role="view" data-src="partials/configuration.view.html"></div>
+<div data-role="view" data-src="partials/library-file.dialog.view.html"></div>
+<div data-role="view" data-src="partials/library-folder.dialog.view.html"></div>
 <div data-role="view" data-src="partials/header.view.html"></div>
 
 <div data-role="page" data-theme="a" data-title="[CurrentLibraryItem.Name]" id="library-files" data-view="library-files">
     <div role="main" class="ui-content">
         <ul data-role="listview" data-inset="true">
             <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryFilesCount] - 1)) -->
-            <li><a href="#" data-transition="slide">
+            <li><a href="#" data-transition="slide" class="library-file" data-jrmc="&quot;key&quot;: [LibraryFile([z]).FileKey], &quot;name&quot;: &quot;[LibraryFile([z]).Name]&quot;">
                 <img data-original="[CurrentLibraryItem.ImageLink]&amp;Width=250&amp;Height=250" class="ui-li-thumb lazy">
 
                 <h2>[LibraryFile([z]).Name]</h2>
 
                 <p>[LibraryFile([z]).Artist]</p>
 
-                <p class="ui-li-aside">time</p>
+                <!--<p class="ui-li-aside">time</p>-->
             </a></li>
             <!-- end: loop -->
         </ul>
