@@ -4,6 +4,10 @@ JQMGizmo
 JQMGizmo is a rewrite of the JRiver MC web remote.
 It uses the JQueryMobile SPA framework, and leverage the JRMC services as a library.
 
+![alt text](https://farm3.staticflickr.com/2889/13388336613_e6ee3ea0f0_z.jpg "Now Playing!")
+
+![alt text](https://farm4.staticflickr.com/3783/13388554414_1e656d066c_z.jpg "Now Playing!")
+
 library.html => main library navigation
 libraryfiles.html => leaf element navigation     (the main URL doesn't change but the template is different)
 
