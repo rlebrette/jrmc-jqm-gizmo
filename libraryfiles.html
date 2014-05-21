@@ -16,7 +16,7 @@
 <div data-role="view" data-src="partials/header.view.html"></div>
 
 <div data-role="page" data-theme="a" data-title="[CurrentLibraryItem.Name]" id="library-files" data-view="library-files">
-    <div role="main" class="ui-content">
+    <div role="main" class="scroller ui-content">
         <ul data-role="listview" data-inset="true">
             <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryFilesCount] - 1)) -->
             <li><a href="#" data-transition="slide" class="library-file" data-jrmc="&quot;key&quot;: [LibraryFile([z]).FileKey], &quot;name&quot;: &quot;[LibraryFile([z]).Name]&quot;">

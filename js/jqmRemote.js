@@ -1,4 +1,4 @@
-define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie'], function ($, $jqm, $jrmc) {
+define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie', 'iscroll', 'jquery.mobile.iscrollview'], function ($, $jqm, $jrmc) {
     // the global state of the player
     var player = {
         lastPlayInfo: {ImageURL: null}, // the last info retrieved from the remote player
@@ -37,7 +37,14 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
             effect: "fadeIn"
         });
         $(".library-folder", page).bind("taphold", folderPlayDialog);
-        $(".library-file", page).click(filePlayDialog)
+        $(".library-file", page).click(filePlayDialog);
+        var scrollerElement = page.find(".scroller");
+        if (scrollerElement.length > 0) {
+            var scroller = scrollerElement.iscrollview();
+            setTimeout(function () {
+                scroller.iscrollview("refresh")
+            }, 0);
+        }
     }
 
     function prepareRemoteView(page) {

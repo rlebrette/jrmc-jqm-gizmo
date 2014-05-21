@@ -8,6 +8,9 @@ requirejs.config({
         "jquery.mobile": {
             deps: ["jquery"]
         },
+        "jquery.mobile.iscrollview": {
+            deps: ["jquery.mobile", "iscroll"]
+        },
         "jquery.img.lazy": {
             deps: ["jquery"]
         },

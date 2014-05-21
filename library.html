@@ -18,8 +18,7 @@
 <div data-role="page" data-theme="a" data-title="[CurrentLibraryItem.Name]" data-view="library">
     <!-- /header -->
 
-    <div role="main" class="ui-content responsive-list-page">
-
+    <div role="main" class="scroller ui-content responsive-list-page">
         <ul data-role="listview" data-inset="true">
             <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
             <li><a href="[LibraryItem([z]).IntoLink]"
@@ -33,7 +32,6 @@
             </a></li>
             <!-- end: loop -->
         </ul>
-
     </div>
     <!-- /content -->
 
