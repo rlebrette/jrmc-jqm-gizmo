@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="jrmc-jqm-gizmo : JQMGizmo is a rewrite of the JRiver MC web remote.It uses the JQueryMobile SPA framework, and leverage the JRMC services as a library." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>jrmc-jqm-gizmo</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/rlebrette/jrmc-jqm-gizmo">View on GitHub</a>
+
+          <h1 id="project_title">jrmc-jqm-gizmo</h1>
+          <h2 id="project_tagline">JQMGizmo is a rewrite of the JRiver MC web remote.It uses the JQueryMobile SPA framework, and leverage the JRMC services as a library.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/rlebrette/jrmc-jqm-gizmo/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/rlebrette/jrmc-jqm-gizmo/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="jqmgizmo" class="anchor" href="#jqmgizmo"><span class="octicon octicon-link"></span></a>JQMGizmo</h1>
+
+<p>JQMGizmo is a rewrite of the JRiver MC web remote.
+It uses the JQueryMobile SPA framework, and leverage the JRMC services as a library.</p>
+
+<p><img src="https://farm3.staticflickr.com/2889/13388336613_e6ee3ea0f0_z.jpg" alt="alt text" title="Now Playing!"></p>
+
+<p><img src="https://farm4.staticflickr.com/3783/13388554414_1e656d066c_z.jpg" alt="alt text" title="Now Playing!"></p>
+
+<p>library.html =&gt; main library navigation
+libraryfiles.html =&gt; leaf element navigation     (the main URL doesn't change but the template is different)</p>
+
+<p>the current mode is stored as a 'mode' cookie where</p>
+
+<h2>
+<a name="class-mode" class="anchor" href="#class-mode"><span class="octicon octicon-link"></span></a>Class: Mode</h2>
+
+<ul>
+<li>[Mode.Display] : the current zone label Playing to ...</li>
+<li>[Mode.IsRemote) : whether it's playing in a zone</li>
+<li>[Mode.IsPlay] : whether it's local playing (on the remote)</li>
+</ul><h2>
+<a name="class-modezone" class="anchor" href="#class-modezone"><span class="octicon octicon-link"></span></a>Class: ModeZone</h2>
+
+<p>The current playing zone</p>
+
+<ul>
+<li>[ModeZone.ID] : the id</li>
+<li><p>[ModeZone.Name] : the name</p></li>
+<li><p>[ShowPlayingNow] : whether the playing now button should be shown on this screen</p></li>
+<li>[ShowSearch] : whether the search button should be shown on this screen</li>
+</ul><h2>
+<a name="currentlibraryitem" class="anchor" href="#currentlibraryitem"><span class="octicon octicon-link"></span></a>CurrentLibraryItem</h2>
+
+<ul>
+<li>[CurrentLibraryItem.ShowPlay] : is it playable?</li>
+<li>[CurrentLibraryItem.UseThumbnails] :</li>
+</ul><h2>
+<a name="count-tokens" class="anchor" href="#count-tokens"><span class="octicon octicon-link"></span></a>Count tokens</h2>
+
+<ul>
+<li>[ZoneCount]: the number of zones</li>
+<li>[LibraryItemCount]: the number of items in a library view</li>
+<li>[PlayingNowFileCount]: the number of files in Playing Now (in the active zone)</li>
+<li>[LibraryFilesCount]: the number of items in a library files view</li>
+</ul><h2>
+<a name="tokens-with-no-class-name-only" class="anchor" href="#tokens-with-no-class-name-only"><span class="octicon octicon-link"></span></a>Tokens with no class (name only)</h2>
+
+<ul>
+<li>[LibraryLocation]: name of the current location when browsing</li>
+<li>[ProgramFullName]: full name of the program (i.e. J. River Media Center)</li>
+<li>[ProgramName]: name of the program (i.e. Media Center)</li>
+<li>[ProgramVersion]: version of the program (i.e. 15.0.75)</li>
+<li>[ActiveZoneName]: name of the current playback zone</li>
+<li>[PlaybackStatus]: status of playback in the current zone (i.e. Playing, Stopped, etc.)</li>
+<li>[LibraryServerLink]: URL to root of server</li>
+<li>[Token]: access token used for authorization (helpful to append to URLs to avoid the need for authentication)</li>
+</ul><h2>
+<a name="class-zoneindex" class="anchor" href="#class-zoneindex"><span class="octicon octicon-link"></span></a>Class: Zone(index)</h2>
+
+<p>The index is the index (0-based) of the zone.</p>
+
+<ul>
+<li>[Zone(x).Name]: name of the zone</li>
+<li>[Zone(x).ID]: Identifier of the zone</li>
+</ul><h2>
+<a name="class-libraryitemindex" class="anchor" href="#class-libraryitemindex"><span class="octicon octicon-link"></span></a>Class: LibraryItem(index)</h2>
+
+<p>When browsing, the individual items that make up a library view. For example, they could be an artist, album, keyword, etc.</p>
+
+<ul>
+<li>[LibraryItem(x).Name]: name of item</li>
+<li>[LibraryItem(x).ImageLink]: URL to a thumbnail (JPEG) for the item</li>
+<li>[LibraryItem(x).IntoLink]: URL to navigate into this item</li>
+<li>[LibraryItem(x).ShowPlay]: whether it makes sense to show play commands for this item (0 or 1)</li>
+<li>[LibraryItem(x).PlayLink]: URL to play the library item on the server machine</li>
+<li>[LibraryItem(x).AddLink]: URL to add the library item to Playing Now on the server machine</li>
+<li>[LibraryItem(x).ShuffleLink]: URL to play (with shuffle) the library item on the server machine</li>
+<li>[LibraryItem(x).M3ULink]: URL that will provide an M3U playlist of the files in the library item</li>
+<li>[LibraryItem(x).ASXLink]: URL that will provide an ASX playlist of the files in the library item</li>
+<li>[LibraryItem(x).MPLLink]: URL that will provide an MPL playlist of the files in the library item</li>
+<li>[LibraryItem(x).WebPlayPlayLink]: URL that will play the library item files on the client</li>
+<li>[LibraryItem(x).WebPlayShuffleLink]: URL that will play (with shuffle) the library item files on the client</li>
+</ul><h2>
+<a name="class-playingfile" class="anchor" href="#class-playingfile"><span class="octicon octicon-link"></span></a>Class: PlayingFile</h2>
+
+<p>The playing file. Uses same variable names as 'LibraryFile', so see below for variable names.</p>
+
+<h2>
+<a name="class-playingnowfileindex" class="anchor" href="#class-playingnowfileindex"><span class="octicon octicon-link"></span></a>Class: PlayingNowFile(index)</h2>
+
+<p>The file at the specified index in Playing Now (zero based). Uses same variable names as 'LibraryFile', so see below for variable names.</p>
+
+<h2>
+<a name="class-libraryfileindex" class="anchor" href="#class-libraryfileindex"><span class="octicon octicon-link"></span></a>Class: LibraryFile(index)</h2>
+
+<p>The file at the specified index in the current LibraryItem (zero based).</p>
+
+<ul>
+<li>[LibraryFile(x).FileKey]: key of the file in the database (immutable, and safe to use between sessions)</li>
+<li>[LibraryFile(x).ImageLink]: URL to a thumbnail (JPEG) of the file</li>
+<li>[LibraryFile(x).Artist]: artist of the file</li>
+<li>[LibraryFile(x).Name]: name of the file</li>
+<li>[LibraryFile(x).PlayLink]: URL to play the file on the server</li>
+<li>[LibraryFile(x).AddLink]: URL to add the file to Playing Now on the server</li>
+<li>[LibraryFile(x).FileLink]: URL to provide the file to the client (on Android, provides MPL playlist pointing to file)</li>
+</ul><h2>
+<a name="class-pagination" class="anchor" href="#class-pagination"><span class="octicon octicon-link"></span></a>Class: Pagination</h2>
+
+<p>Tools and variables for splitting large lists into multiple pages.</p>
+
+<ul>
+<li>[Pagination.StartIndex]: the first index of the current page (can be used in loops)</li>
+<li>[Pagination.FinishIndex]: the last index of the current page (can be used in loops)</li>
+<li>[Pagination.ShowControls(item count)]: whether a page should show pagination controls for the given item count</li>
+<li>[Pagination.Controls(item count)]: links for the list of pages given an item count ( i.e. Previous 1 2 3 Next )</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">jrmc-jqm-gizmo maintained by <a href="https://github.com/rlebrette">rlebrette</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
