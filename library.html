@@ -18,20 +18,26 @@
 <div data-role="page" data-theme="a" data-title="[CurrentLibraryItem.Name]" data-view="library">
     <!-- /header -->
 
-    <div role="main" class="scroller ui-content responsive-list-page">
-        <ul data-role="listview" data-inset="true">
-            <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
-            <li><a href="[LibraryItem([z]).IntoLink]"
-                   class="<!-- begin: if([LibraryItem([z]).ShowPlay]) -->library-folder<!-- end: if -->"
-                   data-transition="slide"
-                   data-jrmc="&quot;key&quot;:&quot;[LibraryItem([z]).IntoLink]&quot;,&quot;name&quot;:&quot;[LibraryItem([z]).Name]&quot;">
-                <img data-original="[LibraryItem([z]).ImageLink]&amp;Width=250&amp;Height=250&amp;Format=png&amp;Pad=1"
-                     class="ui-li-thumb lazy">
+    <div role="main" class="ui-content responsive-list-page">
+        <div id="content" data-role="content">
+            <div class="iscroll-wrapper">
+                <div class="iscroll-scroller">
+                    <ul data-role="listview" data-inset="true">
+                        <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
+                        <li><a href="[LibraryItem([z]).IntoLink]"
+                               class="<!-- begin: if([LibraryItem([z]).ShowPlay]) -->library-folder<!-- end: if -->"
+                               data-transition="slide"
+                               data-jrmc="&quot;key&quot;:&quot;[LibraryItem([z]).IntoLink]&quot;,&quot;name&quot;:&quot;[LibraryItem([z]).Name]&quot;">
+                            <img data-original="[LibraryItem([z]).ImageLink]&amp;Width=250&amp;Height=250&amp;Format=png&amp;Pad=1"
+                                 class="ui-li-thumb lazy">
 
-                <h2>[LibraryItem([z]).Name]</h2>
-            </a></li>
-            <!-- end: loop -->
-        </ul>
+                            <h2>[LibraryItem([z]).Name]</h2>
+                        </a></li>
+                        <!-- end: loop -->
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /content -->
 

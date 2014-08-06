@@ -18,19 +18,21 @@
 <div data-role="page" data-theme="b" id="demo-page" class="responsive-list-page">
     <div role="main" class="ui-content">
 
-        <ul data-role="listview" data-inset="true">
-            <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
-            <li><a href="[LibraryItem([z]).IntoLink]" data-transition="slide">
-                <img src="[LibraryItem([z]).ImageLink]&amp;Width=250&amp;Height=250" class="ui-li-thumb">
+        <div class="iscroll-scroller">
+            <ul data-role="listview" data-inset="true">
+                <!-- begin: loop(z, [Pagination.StartIndex], min([Pagination.FinishIndex], [LibraryItemCount] - 1)) -->
+                <li><a href="[LibraryItem([z]).IntoLink]" data-transition="slide">
+                    <img src="[LibraryItem([z]).ImageLink]&amp;Width=250&amp;Height=250" class="ui-li-thumb">
 
-                <h2>[LibraryItem([z]).Name]</h2>
+                    <h2>[LibraryItem([z]).Name]</h2>
 
-                <p>[LibraryItem([z]).Artist]</p>
+                    <p>[LibraryItem([z]).Artist]</p>
 
-                <p class="ui-li-aside">iOS</p>
-            </a></li>
-            <!-- end: loop -->
-        </ul>
+                    <p class="ui-li-aside">iOS</p>
+                </a></li>
+                <!-- end: loop -->
+            </ul>
+        </div>
 
     </div>
     <!-- /content -->

@@ -1,4 +1,4 @@
-define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie', 'iscroll', 'jquery.mobile.iscrollview'], function ($, $jqm, $jrmc) {
+define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquery.cookie', 'iscroll'], function ($, $jqm, $jrmc) {
     // the global state of the player
     var player = {
         lastPlayInfo: {ImageURL: null}, // the last info retrieved from the remote player
@@ -9,6 +9,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
             refresh: 500 // how many milliseconds before refreshing data from JRMC
         }
     };
+    var playInfo;
 
     function setCookie(c_name, value, exdays) {
         // build date
@@ -33,18 +34,59 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
     }
 
     function prepareLibraryView(page) {
-        $("img.lazy", page).lazyload({
-            effect: "fadeIn"
-        });
         $(".library-folder", page).bind("taphold", folderPlayDialog);
         $(".library-file", page).click(filePlayDialog);
-        var scrollerElement = page.find(".scroller");
-        if (scrollerElement.length > 0) {
-            var scroller = scrollerElement.iscrollview();
+
+        var $wrapper = $(".iscroll-scroller", page);
+        $wrapper.each(function () {
+            var $this = $(this);
+
+            // Set the needed CSS
+
+            $this.css('position', 'absolute')
+                .css('overflow', 'hidden')
+                .css('top', '0')
+                .css('bottom', '0')
+                .css('left', '0')
+                .css('width', '100%');
+            var $lastElement = $(".ui-last-child", $this);
+            var $clientRect = $lastElement.get(0).getBoundingClientRect();
+            $this.css('height', $clientRect.bottom);
+//            $this.parent().css('height',600);
+            // Launch iScroll
+
+            var scrollArea = $this.get(0).parentNode;
+            $scrollable = new IScroll(scrollArea, {
+                eventPassthrough: false,
+                scrollX: false,
+                scrollY: true,
+                preventDefault: false,
+                scrollbars: true,
+                mouseWheel: true,
+                interactiveScrollbars: true,
+                shrinkScrollbars: 'clip',
+                useTransition: false,
+                bindToWrapper: true,
+                bounceEasing: 'elastic',
+                bounceTime: 1200,
+                probeType: 3, // watch the scroller
+                fadeScrollbars: false
+            });
             setTimeout(function () {
-                scroller.iscrollview("refresh")
-            }, 0);
-        }
+                $scrollable.refresh();
+            }, 1000);
+            $loader = $("img.lazy", page).lazyload({
+                effect: "fadeIn",
+                container: scrollArea,
+                event: function(callback) {
+                    $scrollable.on("scrollEnd", callback)
+                }
+            });
+        });
+
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, false);
     }
 
     function prepareRemoteView(page) {
@@ -94,6 +136,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
         var view = player.view;
         view.title = activePage.jqmData("title");
         view.type = activePage.jqmData("view");
+        view.html = activePage;
         return view;
     }
 
@@ -242,6 +285,7 @@ define(['jquery', 'jquery.mobile', 'app/jrmcServices', 'jquery.img.lazy', 'jquer
             var $jrmcData = jrmcData($playFileDialog);
             $jrmc.playFile($jrmcData.key, action);
             $playFileDialog.popup("close");
-        }
+        },
+        playerContext: player
     }
 });
